@@ -1,0 +1,12 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - AFN",
+            "request": "launch",
+            "console":"integratedTerminal",
+            "mainClass": "AFN",
+            "projectName": "Compiladores_cdbbc6f9"
+        }
+    ]
+}

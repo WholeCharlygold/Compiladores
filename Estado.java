@@ -1,10 +1,23 @@
-import java.io.*;
+
 public class Estado{
-    Transicion t=new Transicion();
+    int id;//oropiedades
 
-    public Estado(Transicion t){
-        this.t=t;
+    public Estado(int id){
+        this.id=id;
 
+    }
+    public Estado(){
+
+    }
+   
+    public int getID(){
+        return id;
+    }
+    public void setID(int num){
+        id=num;
+    }
+    public static void main(String[]args){
+        
     }
 
 }
