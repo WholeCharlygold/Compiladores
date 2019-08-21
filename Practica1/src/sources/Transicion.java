@@ -32,6 +32,11 @@ public class Transicion {
         return destino.getId();
     }
 
+    @Override
+    public String toString() {
+        return "Transicion{" + "c=" + c + ", origen=" + origen + ", destino=" + destino + '}';
+    }
+
 
 
 
