@@ -54,7 +54,7 @@ public class AFN extends Automata {
         Estados_Iniciales.add(t2);
         Estado e_inicial = new Estado(true, false, Estados_Iniciales);
         this.getEstadoInicial().setEstadoInicial(false);
-        this.estadoInicial=e_inicial;
+        this.estadoInicial = e_inicial;
         this.estados.add(e_inicial);
         Estado e_final = new Estado(false, true, new LinkedList<Transicion>());
         this.estados.add(e_final);
@@ -183,7 +183,7 @@ public class AFN extends Automata {
                 for (Transicion t : e.getTransiciones()) {
                     if (t.isEpsilon()) {
                         r.add(t.getEstadoSiguiente());
-                        r = cerraduraEpsilon(t.getEstadoSiguiente());
+                        r = cerraduraEpsilon(t.getEstadoSiguiente(), r);
                     }
                 }
 
@@ -199,6 +199,28 @@ public class AFN extends Automata {
         HashSet<Estado> r = new HashSet<Estado>();
         for (Estado e : conjunto) {
             for (Transicion t : e.getTransiciones()) {
+                if (!t.isEpsilon()) {
+                    if (t.getCaracterDeTransicion() == c) {
+                        r.add(t.getEstadoSiguiente());
+                        r = Mover(t.getEstadoSiguiente(), c, r);
+                    }
+                }
+            }
+        }
+        if (r.isEmpty()) {
+            System.out.println("Operacion Mover vacia");
+            return r;
+        } else {
+            return r;
+        }
+
+    }
+
+    public HashSet<Estado> Mover(Estado siguiente, char c, HashSet<Estado> aux) {
+        HashSet<Estado> r = aux;
+
+        for (Transicion t : siguiente.getTransiciones()) {
+            if (!t.isEpsilon()) {
                 if (t.getCaracterDeTransicion() == c) {
                     r.add(t.getEstadoSiguiente());
                     r = Mover(t.getEstadoSiguiente(), c, r);
@@ -208,32 +230,41 @@ public class AFN extends Automata {
         return r;
     }
 
-    public HashSet<Estado> Mover(Estado siguiente, char c, HashSet<Estado> aux) {
-        HashSet<Estado> r = aux;
-
-        for (Transicion t : siguiente.getTransiciones()) {
-            if (t.getCaracterDeTransicion() == c) {
-                r.add(t.getEstadoSiguiente());
-                r = Mover(t.getEstadoSiguiente(), c, r);
-            }
+    public HashSet<Estado> Ir_A(HashSet <Estado> s,char c){
+        HashSet <Estado> r=new HashSet<Estado>();
+        HashSet <Estado> r2=new HashSet<Estado>();
+        r=Mover(s, c);
+        for(Estado e: r){
+            r2=cerraduraEpsilon(e);
         }
-
-        return r;
+      
+        return r2;
     }
 
-    public static void main(String[] args) {
+    public  static void main(String[] args) {
+
         AFN carlos = new AFN('a');
         AFN afnb = new AFN('b');
+        AFN afnc = new AFN('c');
+        afnc.clausura_cierre();
         carlos.union(afnb);
+        carlos.clausura_positiva();
+        carlos.concatenar(afnc);
+        /*
+         * AFN carlos=new AFN('a'); AFN aux= new AFN('a');
+         */
+        // carlos.concatenar(aux);
         HashSet<Estado> resultado = new HashSet<Estado>();
-
-        for(Estado e: carlos.getEstados()){
-            if(e.getId()==1)
-            resultado.add(e);
-        }
-         resultado=carlos.cerraduraEpsilon(carlos.getEstadoInicial());
-       // resultado=carlos.Mover(resultado,'a');
+        HashSet<Estado> resultado2 = new HashSet<Estado>();
+/*
+        for (Estado e : carlos.getEstados()) {
+            if (e.getId() == 9)
+                resultado.add(e);
+        }*/
+        // resultado2=carlos.Mover(carlos.getEstados(), 'a');
+        resultado = carlos.cerraduraEpsilon(carlos.getEstadoInicial());
         // carlos.pregunta();
+        resultado2=carlos.Ir_A(resultado, 'a');
 
         System.out.println(carlos.getAlfabeto());
         for (Estado estado : carlos.getEstados()) {
@@ -248,7 +279,7 @@ public class AFN extends Automata {
         }
         System.out.println("Estado Inicial: " + carlos.getEstadoInicial().getId());
 
-        for (Estado e : resultado) {
+        for (Estado e : resultado2) {
             System.out.println(e.getId() + " ");
         }
     }
