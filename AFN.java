@@ -3,8 +3,16 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Stack;
 
+/**
+ * Clase que tiene como padre Automata y representa automatas finitos no
+ * deterministas
+ */
 public class AFN extends Automata {
-
+    /**
+     * Contruye un AFN con un solo caracter
+     * 
+     * @param ch - Caracter para la construccion del afn
+     */
     public AFN(Character ch) {
         super(null, null, null, null);
         if (!super.getAlfabeto().contains(ch)) {
@@ -25,6 +33,12 @@ public class AFN extends Automata {
         this.estadoInicial = estadoInicial;
     }
 
+    /**
+     * Funcion para concatenar el AFN con otro AFN(afnb)
+     * 
+     * @param afnb - AFN con quien se quiere concatenar el AFN principal
+     * @return - AFN © afnb
+     */
     public AFN concatenar(AFN afnb) {
         for (Estado estado : this.estadosFinales) {
             estado.getTransiciones().addAll(afnb.getEstadoInicial().getTransiciones());
@@ -45,6 +59,12 @@ public class AFN extends Automata {
         return this;
     }
 
+    /**
+     * Funcion que une un AFN con otro AFN(afn)
+     * 
+     * @param afn - AFN que se une con el AFN principal
+     * @return - AFN | afn
+     */
     public AFN union(AFN afn) {
         Transicion t1 = new Transicion(this.getEstadoInicial());
         Transicion t2 = new Transicion(afn.getEstadoInicial());
@@ -80,6 +100,11 @@ public class AFN extends Automata {
         return this;
     }
 
+    /**
+     * Funcion que obtiene AFN+
+     * 
+     * @return AFN+
+     */
     public AFN clausura_positiva() {
         Transicion t1 = new Transicion(this.getEstadoInicial());
         LinkedList<Transicion> Transiciones_Iniciales = new LinkedList<Transicion>();
@@ -102,6 +127,10 @@ public class AFN extends Automata {
         return this;
     }
 
+    /**
+     * Funcion  que obtiene AFN*
+     * @return AFN*
+     */
     public AFN clausura_cierre() {
         Transicion t1 = new Transicion(this.getEstadoInicial());
         LinkedList<Transicion> Transiciones_Iniciales = new LinkedList<Transicion>();
@@ -127,7 +156,10 @@ public class AFN extends Automata {
         return this;
 
     }
-
+   /**
+    * Funcion que obtiene AFN?
+    * @return AFN?
+    */
     public AFN pregunta() {
         LinkedList<Transicion> Transiciones_Iniciales = new LinkedList<Transicion>();
         Transicion t1 = new Transicion(this.getEstadoInicial());
@@ -154,7 +186,11 @@ public class AFN extends Automata {
         return this;
 
     }
-
+/**
+ * 
+ * @param start
+ * @return
+ */
     public HashSet<Estado> cerraduraEpsilon(Estado start) {
         HashSet<Estado> r = new HashSet<Estado>();
         r.add(start);
@@ -230,41 +266,41 @@ public class AFN extends Automata {
         return r;
     }
 
-    public HashSet<Estado> Ir_A(HashSet <Estado> s,char c){
-        HashSet <Estado> r=new HashSet<Estado>();
-        HashSet <Estado> r2=new HashSet<Estado>();
-        r=Mover(s, c);
-        for(Estado e: r){
-            r2=cerraduraEpsilon(e);
+    public HashSet<Estado> Ir_A(HashSet<Estado> s, char c) {
+        HashSet<Estado> r = new HashSet<Estado>();
+        HashSet<Estado> r2 = new HashSet<Estado>();
+        r = Mover(s, c);
+        for (Estado e : r) {
+            r2 = cerraduraEpsilon(e);
         }
-      
+
         return r2;
     }
 
-    public  static void main(String[] args) {
+    public static void main(String[] args) {
 
         AFN carlos = new AFN('a');
         AFN afnb = new AFN('b');
-        AFN afnc = new AFN('c');
-        afnc.clausura_cierre();
-        carlos.union(afnb);
-        carlos.clausura_positiva();
-        carlos.concatenar(afnc);
+        // AFN afnc = new AFN('c');
+        // afnc.clausura_cierre();
+        // carlos.union(afnb);
+        // carlos.clausura_positiva();
+        // carlos.concatenar(afnc);
         /*
          * AFN carlos=new AFN('a'); AFN aux= new AFN('a');
          */
         // carlos.concatenar(aux);
+        carlos.concatenar(afnb);
         HashSet<Estado> resultado = new HashSet<Estado>();
         HashSet<Estado> resultado2 = new HashSet<Estado>();
-/*
-        for (Estado e : carlos.getEstados()) {
-            if (e.getId() == 9)
-                resultado.add(e);
-        }*/
+        /*
+         * for (Estado e : carlos.getEstados()) { if (e.getId() == 9) resultado.add(e);
+         * }
+         */
         // resultado2=carlos.Mover(carlos.getEstados(), 'a');
         resultado = carlos.cerraduraEpsilon(carlos.getEstadoInicial());
         // carlos.pregunta();
-        resultado2=carlos.Ir_A(resultado, 'a');
+        resultado2 = carlos.Ir_A(resultado, 'a');
 
         System.out.println(carlos.getAlfabeto());
         for (Estado estado : carlos.getEstados()) {

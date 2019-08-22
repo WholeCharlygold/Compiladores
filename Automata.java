@@ -9,7 +9,7 @@ public abstract class Automata {
 	
 	protected LinkedList<Character> alfabeto;
 	protected HashSet<Estado> estados;
-	protected HashSet<Estado> estadosFinales;
+	protected HashSet<Estado> estadosFinales; //Estados de aceptacion
 	protected Estado estadoInicial;
 	
 	/**
