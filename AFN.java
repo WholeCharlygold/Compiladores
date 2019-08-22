@@ -1,187 +1,255 @@
-import java.io.*;
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Stack;
 
-public class AFN {
-    char c;
+public class AFN extends Automata {
 
-    ArrayList<Transicion> t_array = new ArrayList<Transicion>();
-    ArrayList<Estado> e_array = new ArrayList<Estado>();
-    ArrayList<Character> alfabeto = new ArrayList<Character>();
-    // int contador=1;
-    // Estado e_inicial = new Estado();
-    Estado e_final = new Estado();
-    // Transicion t;
-
-    public AFN() {// Constructor para la creacion de un AFN sin caracter
-        e_array.add(new Estado(0));
-    }
-
-    public AFN(char c) {// Constructor para la creacion de un AFN con un caracter
-        this.c = c;
-        if (c != 'E') {
-            e_array.add(new Estado(0));
-            Estado e_siguiente = new Estado(1);
-            e_array.add(e_siguiente);
-            this.e_final = e_array.get(e_array.size() - 1);//e_siguiente
-            Transicion a = new Transicion(c, e_array.get(0), e_final);
-            alfabeto.add(c);
-            t_array.add(a);
-        } else {
-            System.out.println("EPSILOOOON");
+    public AFN(Character ch) {
+        super(null, null, null, null);
+        if (!super.getAlfabeto().contains(ch)) {
+            super.getAlfabeto().add(ch);
         }
+        HashSet<Estado> estados = new HashSet<Estado>();
+        Estado estadoFinal = new Estado(false, true, new LinkedList<Transicion>());
+        HashSet<Estado> estadosFinales = new HashSet<Estado>();
+        estadosFinales.add(estadoFinal);
+        LinkedList<Transicion> transicionesEstadoInicial = new LinkedList<Transicion>();
+        transicionesEstadoInicial.add(new Transicion(ch, estadoFinal));
+        Estado estadoInicial = new Estado(true, false, transicionesEstadoInicial);
+        estados.add(estadoInicial);
+        estados.add(estadoFinal);
 
+        this.estados = estados;
+        this.estadosFinales = estadosFinales;
+        this.estadoInicial = estadoInicial;
     }
 
-    public void set_caracter(char a) {// Metodo para poner el caracter con el que se hara un AFN
-        c = a;
-    }
-
-    public char get_caracter() {// Metodo que retorna el caracter que tiene un AFN simple
-        return c;
-    }
-
-    public Estado get_inicial() {// Metodo para obtener el estado inicial de un AFN
-        return e_array.get(0);
-    }
-
-    public void set_inicial(Estado e) {// Metodo para poner el estado inicial de un AFN
-        e_array.set(0, e);
-    }
-
-    public Estado get_final() { // Metodo para obtener el estado final de un AFN
-        return e_array.get(e_array.size() - 1);
-    }
-
-    public void set_final(Estado e) {// Metodo para poner el estado final de un AFN
-        e_array.set(e_array.size() - 1, e);
-    }
-    public void add_e(Estado e){
-        e.setID(e_array.size()-1);
-        e_array.add(e);
-
-    }
-    public void add_alpha(AFN afn1,AFN afn2){
-
-    }
-    public static AFN con(AFN afn1,AFN afn2){
-        AFN main=new AFN();
-
-       
-
-        return main;
-        
-    }
-
-    public static AFN concatenar(AFN afn1, AFN afn2) {// Operacion CONCATENAR de dos AFN (afn1 y afn2)
-        AFN main = new AFN(); // Se crea el AFN principal que hace el return
-        // int j = 0; // Contador auxiliar para colocar el ID en los estados
-        int j = 1;
-        main.alfabeto.addAll(afn1.alfabeto); // añadimos el alfabeto o caracter del afn1
-        main.alfabeto.addAll(afn2.alfabeto); // añadimos el alfabeto o caracter del afn2
-        for (int i = 0; i < afn1.e_array.size(); i++) {
-            main.e_array.add(afn1.e_array.get(i));
-            main.e_array.get(i + 1).setID(j);
-            j++;
+    public AFN concatenar(AFN afnb) {
+        for (Estado estado : this.estadosFinales) {
+            estado.getTransiciones().addAll(afnb.getEstadoInicial().getTransiciones());
+            estado.setEstadoFinal(false);
         }
-        if (afn1.e_array.size() != 2) { //Caso en el que son AFNs las que se concatenan y no solo simbolos
-            main.e_array.add(new Estado(j));
-            for (int i = 0; i < afn2.e_array.size(); i++) {
-                main.e_array.add(afn2.e_array.get(i));
-                main.e_array.get(j).setID(j);
-                j++;
+        for (Estado estado : afnb.getEstados()) {
+            if (!estado.isEstadoInicial()) {
+                this.estados.add(estado);
             }
-            main.e_array.add(new Estado(j));
-            for (int i = 0; i < afn1.t_array.size(); i++) {
-                main.t_array.add(new Transicion(afn1.t_array.get(i).getChar(), main.e_array.get(i + 1),
-                        main.e_array.get(i + 2)));
-
+        }
+        afnb.getEstadoInicial().setEstadoInicial(false);
+        this.estadosFinales = afnb.getEstadosFinales();
+        for (Character simbolo : afnb.getAlfabeto()) {
+            if (!this.alfabeto.contains(simbolo)) {
+                this.alfabeto.add(simbolo);
             }
-            for (int i = 0; i < afn2.t_array.size(); i++) {
-                main.t_array.add(new Transicion(afn2.t_array.get(i).getChar(),
-                        main.e_array.get(main.e_array.indexOf(afn2.get_inicial())),
-                        main.e_array.get(main.e_array.indexOf(afn2.get_inicial()) + 1)));
+        }
+        return this;
+    }
 
-            }
-            return main;
-        }//Fin del caso
-
-        for (int i = 0; i < main.alfabeto.size(); i++) { // añadimos por cada caracter del alfabeto una transicion a
-                                                         // nuestro AFN
-            main.t_array.add(new Transicion(main.alfabeto.get(i), main.e_array.get(i), main.e_array.get(i + 1)));
+    public AFN union(AFN afn) {
+        Transicion t1 = new Transicion(this.getEstadoInicial());
+        Transicion t2 = new Transicion(afn.getEstadoInicial());
+        afn.getEstadoInicial().setEstadoInicial(false);
+        LinkedList<Transicion> Estados_Iniciales = new LinkedList<Transicion>();
+        Estados_Iniciales.add(t1);
+        Estados_Iniciales.add(t2);
+        Estado e_inicial = new Estado(true, false, Estados_Iniciales);
+        this.getEstadoInicial().setEstadoInicial(false);
+        this.estadoInicial=e_inicial;
+        this.estados.add(e_inicial);
+        Estado e_final = new Estado(false, true, new LinkedList<Transicion>());
+        this.estados.add(e_final);
+        for (Estado e : afn.getEstadosFinales()) {
+            e.getTransiciones().add(new Transicion(e_final));
+            e.setEstadoFinal(false);
+        }
+        for (Estado e : this.getEstadosFinales()) {
+            e.getTransiciones().add(new Transicion(e_final));
+            e.setEstadoFinal(false);
         }
 
-        return main;
+        this.estadosFinales = new HashSet<Estado>();
+        estadosFinales.add(e_final);
+
+        for (Character simbolo : afn.getAlfabeto()) {
+            if (!this.alfabeto.contains(simbolo)) {
+                this.alfabeto.add(simbolo);
+            }
+        }
+        this.estados.addAll(afn.getEstados());
+
+        return this;
+    }
+
+    public AFN clausura_positiva() {
+        Transicion t1 = new Transicion(this.getEstadoInicial());
+        LinkedList<Transicion> Transiciones_Iniciales = new LinkedList<Transicion>();
+        Transiciones_Iniciales.add(t1);
+        Estado e_inicial = new Estado(true, false, Transiciones_Iniciales);
+        this.estados.add(e_inicial);
+
+        Estado e_final = new Estado(false, true, new LinkedList<Transicion>());
+        this.estados.add(e_final);
+        for (Estado e : this.getEstadosFinales()) {
+            e.getTransiciones().add(new Transicion(e_final));
+            e.getTransiciones().add(new Transicion(this.getEstadoInicial()));
+            e.setEstadoFinal(false);
+        }
+        this.estadoInicial = e_inicial;
+        this.getEstadoInicial().setEstadoInicial(false);
+        this.estadosFinales = new HashSet<Estado>();
+        estadosFinales.add(e_final);
+
+        return this;
+    }
+
+    public AFN clausura_cierre() {
+        Transicion t1 = new Transicion(this.getEstadoInicial());
+        LinkedList<Transicion> Transiciones_Iniciales = new LinkedList<Transicion>();
+        Transiciones_Iniciales.add(t1);
+
+        this.getEstadoInicial().setEstadoInicial(false);
+        Estado e_final = new Estado(false, true, new LinkedList<Transicion>());
+        Transicion t2 = new Transicion(e_final);
+        Transiciones_Iniciales.add(t2);
+        Estado e_inicial = new Estado(true, false, Transiciones_Iniciales);
+        this.estados.add(e_inicial);
+        for (Estado e : this.getEstadosFinales()) {
+            e.getTransiciones().add(new Transicion(e_final));
+            e.getTransiciones().add(new Transicion(this.getEstadoInicial()));
+            e.setEstadoFinal(false);
+        }
+        this.estadoInicial = e_inicial;
+        this.getEstados().add(e_final);
+
+        this.estadosFinales = new HashSet<Estado>();
+        estadosFinales.add(e_final);
+
+        return this;
 
     }
 
-    public static AFN union(AFN afn1, AFN afn2) {// Operacion UNION de dos AFN (afn1 y afn2)
-        AFN main = new AFN();
+    public AFN pregunta() {
+        LinkedList<Transicion> Transiciones_Iniciales = new LinkedList<Transicion>();
+        Transicion t1 = new Transicion(this.getEstadoInicial());
 
-        int j = 1;
-        for (int i = 0; i < afn1.e_array.size(); i++) {
-            main.e_array.add(afn1.e_array.get(i));
-            main.e_array.get(i + 1).setID(j);
-            j++;
-        }
-        // j++;
-        for (int i = 0; i < afn2.e_array.size(); i++) {
-            main.e_array.add(afn2.e_array.get(i));
-            main.e_array.get(j).setID(j);
-            j++;
-        }
+        Transiciones_Iniciales.add(t1);
 
-        main.e_array.add(new Estado(j));
-        main.alfabeto.addAll(afn1.alfabeto);
-        main.alfabeto.addAll(afn2.alfabeto);
+        this.getEstadoInicial().setEstadoInicial(false);
+        Estado e_final = new Estado(false, true, new LinkedList<Transicion>());
+        Transicion t2 = new Transicion(e_final);
+        Transiciones_Iniciales.add(t2);
+        this.getEstados().add(e_final);
+        Estado e_inicial = new Estado(true, false, Transiciones_Iniciales);
+        this.estadoInicial = e_inicial;
+        this.getEstados().add(e_inicial);
 
-        main.t_array.add(
-                new Transicion('E', main.get_inicial(), main.e_array.get(main.e_array.indexOf(afn1.get_inicial()))));
-
-        for (int i = 0; i < afn1.t_array.size(); i++) {
-            main.t_array.add(
-                    new Transicion(afn1.t_array.get(i).getChar(), main.e_array.get(i + 1), main.e_array.get(i + 2)));
+        for (Estado e : this.getEstadosFinales()) {
+            e.getTransiciones().add(new Transicion(e_final));
+            e.setEstadoFinal(false);
 
         }
-        main.t_array
-                .add(new Transicion('E', main.e_array.get(main.e_array.indexOf(afn1.get_final())), main.get_final()));
+        this.estadosFinales = new HashSet<Estado>();
+        this.getEstadosFinales().add(e_final);
 
-        main.t_array.add(
-                new Transicion('E', main.get_inicial(), main.e_array.get(main.e_array.indexOf(afn2.get_inicial()))));
+        return this;
 
-        for (int i = 0; i < afn2.t_array.size(); i++) {
-            main.t_array.add(new Transicion(afn2.t_array.get(i).getChar(),
-                    main.e_array.get(main.e_array.indexOf(afn2.get_inicial())),
-                    main.e_array.get(main.e_array.indexOf(afn2.get_inicial()) + 1)));
+    }
+
+    public HashSet<Estado> cerraduraEpsilon(Estado start) {
+        HashSet<Estado> r = new HashSet<Estado>();
+        r.add(start);
+        for (Estado e : this.getEstados()) {
+            if (e.getId() == start.getId()) {
+                for (Transicion t : e.getTransiciones()) {
+                    if (t.isEpsilon()) {
+                        r.add(t.getEstadoSiguiente());
+                        r = cerraduraEpsilon(t.getEstadoSiguiente(), r);
+                    }
+                }
+
+            }
 
         }
-        main.t_array
-                .add(new Transicion('E', main.e_array.get(main.e_array.indexOf(afn2.get_final())), main.get_final()));
 
-        return main;
+        return r;
+
+    }
+
+    public HashSet<Estado> cerraduraEpsilon(Estado start, HashSet<Estado> guardar) {
+        HashSet<Estado> r = guardar;
+        r.add(start);
+        for (Estado e : this.getEstados()) {
+            if (e.getId() == start.getId()) {
+                for (Transicion t : e.getTransiciones()) {
+                    if (t.isEpsilon()) {
+                        r.add(t.getEstadoSiguiente());
+                        r = cerraduraEpsilon(t.getEstadoSiguiente());
+                    }
+                }
+
+            }
+
+        }
+
+        return r;
+
+    }
+
+    public HashSet<Estado> Mover(HashSet<Estado> conjunto, char c) {
+        HashSet<Estado> r = new HashSet<Estado>();
+        for (Estado e : conjunto) {
+            for (Transicion t : e.getTransiciones()) {
+                if (t.getCaracterDeTransicion() == c) {
+                    r.add(t.getEstadoSiguiente());
+                    r = Mover(t.getEstadoSiguiente(), c, r);
+                }
+            }
+        }
+        return r;
+    }
+
+    public HashSet<Estado> Mover(Estado siguiente, char c, HashSet<Estado> aux) {
+        HashSet<Estado> r = aux;
+
+        for (Transicion t : siguiente.getTransiciones()) {
+            if (t.getCaracterDeTransicion() == c) {
+                r.add(t.getEstadoSiguiente());
+                r = Mover(t.getEstadoSiguiente(), c, r);
+            }
+        }
+
+        return r;
     }
 
     public static void main(String[] args) {
+        AFN carlos = new AFN('a');
+        AFN afnb = new AFN('b');
+        carlos.union(afnb);
+        HashSet<Estado> resultado = new HashSet<Estado>();
 
-        System.out.println("Teclee un caracter: ");
-        Scanner leer = new Scanner(System.in);
-        char c = leer.next().charAt(0);
-        AFN thomsom = new AFN(c);
-        AFN aux = new AFN(c);
-        aux = concatenar(new AFN('a'), new AFN('b'));
-        //aux = concatenar(new AFN('c'), new AFN('d'));
-        //thomsom = aux;
-        thomsom= concatenar(aux,thomsom);
-        // thomsom = concatenar(thomsom, aux);
-        System.out.println("Alfabeto: " + thomsom.alfabeto);
-        for (int i = 0; i < thomsom.e_array.size(); i++) {
-            System.out.println("Estados: " + thomsom.e_array.get(i).getID());
+        for(Estado e: carlos.getEstados()){
+            if(e.getId()==1)
+            resultado.add(e);
         }
+         resultado=carlos.cerraduraEpsilon(carlos.getEstadoInicial());
+       // resultado=carlos.Mover(resultado,'a');
+        // carlos.pregunta();
 
-        for (int i = 0; i < thomsom.t_array.size(); i++) {
-            System.out.println("Transiciones: " + thomsom.t_array.get(i).getOrigen() + "--"
-                    + thomsom.t_array.get(i).getChar() + "-->" + thomsom.t_array.get(i).getDestino());
+        System.out.println(carlos.getAlfabeto());
+        for (Estado estado : carlos.getEstados()) {
+            System.out.println(estado.getId());
         }
+        for (Estado estado : carlos.getEstados()) {
+            estado.displayTransicion();
+        }
+        System.out.print("Estados finales: ");
+        for (Estado e : carlos.getEstadosFinales()) {
+            System.out.println(e.getId() + "");
+        }
+        System.out.println("Estado Inicial: " + carlos.getEstadoInicial().getId());
 
+        for (Estado e : resultado) {
+            System.out.println(e.getId() + " ");
+        }
     }
 }

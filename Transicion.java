@@ -1,39 +1,35 @@
 
 
 public class Transicion {
-    char caracter;
-    Estado origen = new Estado();
-    Estado destino = new Estado();
+    private Estado estadoSiguiente;
+    private boolean epsilon;
+    private Character caracterDeTransicion;
 
-    public Transicion(char caracter, Estado origen, Estado destino) {
-        this.caracter = caracter;
-        this.origen = origen;
-        this.destino = destino;
+    public Transicion(Character caracterDeTransicion, Estado estadoSiguiente) {
+		super();
+		this.epsilon = false;
+        this.estadoSiguiente = estadoSiguiente;
+        this.caracterDeTransicion=caracterDeTransicion;
+	}
+
+   /**
+	 * Este contructor nos ayuda a crear una transicion epsilon a otro estado
+	 * @param Estado estadoSiguiente - Estado al que se llegara con la transcion
+	 * */
+	public Transicion(Estado estadoSiguiente) {
+		super();
+		this.epsilon = true;
+		this.estadoSiguiente = estadoSiguiente;
+	}
+	
+	public Estado getEstadoSiguiente() {
+		return estadoSiguiente;
     }
-
-    public char getChar() {
-        return caracter;
-    }
-
-    public int getOrigen() {
-        return origen.getID();
-    }
-
-    public void setOrigen(Estado e) {
-        origen = e;
-
-    }
-
-    public int getDestino() {
-        return destino.getID();
-    }
-
-    public void setDestino(Estado e) {
-        destino = e;
-    }
-
-    public static void main(String[] args) {
-        char caracter = 'c';
-        System.out.println(caracter);
-    }
+    public Character getCaracterDeTransicion() {
+		return caracterDeTransicion;
+	}
+	
+	public boolean isEpsilon() {
+		return epsilon;
+	}
 }
