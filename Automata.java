@@ -8,9 +8,9 @@ import java.util.LinkedList;
 public abstract class Automata {
 	
 	protected LinkedList<Character> alfabeto;
-	protected HashSet<Estado> estados;
+	protected HashSet<Estado> estados;	//Todos los estados del automata
 	protected HashSet<Estado> estadosFinales; //Estados de aceptacion
-	protected Estado estadoInicial;
+	protected Estado estadoInicial;	
 	
 	/**
 	 * Este contructor crea un Automata de acuerdo a lo establecido en los parametros
@@ -30,19 +30,31 @@ public abstract class Automata {
 		this.estadosFinales = estadosFinales;
 		this.estadoInicial = estadoInicial;
 	}
-	
+	/**
+	 * Funcion para obtener todos los estados de un automata
+	 * @return HashSet de Estados
+	 */
 	public HashSet<Estado> getEstados() {
 		return estados;
 	}
-	
+	/**
+	 * Funcion para obtener el alfabeto de un automata
+	 * @return LinkedList alfabeto
+	 */
 	public LinkedList<Character> getAlfabeto() {
 		return alfabeto;
 	}
-	
+	/**
+	 * Funcion para obtener los estados finales o aceptables
+	 * @return HashSet estados finales
+	 */
 	public HashSet<Estado> getEstadosFinales() {
 		return estadosFinales;
 	}
-	
+	/**
+	 * Funcion para obtener el estado inicial de un automata
+	 * @return Estado estadoinicial
+	 */
 	public Estado getEstadoInicial() {
 		return estadoInicial;
 	}

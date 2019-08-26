@@ -187,8 +187,8 @@ public class AFN extends Automata {
 
     }
 /**
- * 
- * @param start
+ * Funcion que obtiene la cerradura epsilon dado un Estado
+ * @param start Estado
  * @return
  */
     public HashSet<Estado> cerraduraEpsilon(Estado start) {
@@ -210,7 +210,12 @@ public class AFN extends Automata {
         return r;
 
     }
-
+/**
+ * Funcion que ayuda a cerraduraEpsilon 
+ * @param start
+ * @param guardar
+ * @return
+ */
     public HashSet<Estado> cerraduraEpsilon(Estado start, HashSet<Estado> guardar) {
         HashSet<Estado> r = guardar;
         r.add(start);
@@ -230,7 +235,12 @@ public class AFN extends Automata {
         return r;
 
     }
-
+/**
+ * Funcion mover para un conjunto de estados y un caracter
+ * @param conjunto Conjunto de estados
+ * @param c Caracter para la funcion mover
+ * @return
+ */
     public HashSet<Estado> Mover(HashSet<Estado> conjunto, char c) {
         HashSet<Estado> r = new HashSet<Estado>();
         for (Estado e : conjunto) {
@@ -251,7 +261,13 @@ public class AFN extends Automata {
         }
 
     }
-
+/**
+ * Funcion que ayuda a Mover
+ * @param siguiente
+ * @param c
+ * @param aux
+ * @return
+ */
     public HashSet<Estado> Mover(Estado siguiente, char c, HashSet<Estado> aux) {
         HashSet<Estado> r = aux;
 
@@ -265,7 +281,12 @@ public class AFN extends Automata {
         }
         return r;
     }
-
+/**
+ * Funcion Ir_A de un conjunto de estados s con un caracter c
+ * @param s Conjunto de estados
+ * @param c Caracter 
+ * @return
+ */
     public HashSet<Estado> Ir_A(HashSet<Estado> s, char c) {
         HashSet<Estado> r = new HashSet<Estado>();
         HashSet<Estado> r2 = new HashSet<Estado>();
