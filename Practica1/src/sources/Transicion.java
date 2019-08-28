@@ -10,38 +10,29 @@ package sources;
  * @author chuch
  */
 public class Transicion {
-    private char c;
-    private Estado origen= new Estado();
-    private Estado destino= new Estado();
-
-    public void set(char c,Estado origen, Estado destino) {
-        this.c = c; 
-        this.origen = origen;
-        this.destino = destino;
+private char c;
+private Estado e;
+private Estado o;
+    public String getE() {
+        return "Transicion "+c+ " Estado Origen" + o.isTipo()+ " Origen" +o.getId()+ " Estado Destino" + e.isTipo()+ " Destino " +e.getId();
     }
 
     public char getC() {
         return c;
     }
 
-    public int getOrigen() {
-        return origen.getId();
+    public void setE(Estado e) {
+        this.e = e;
     }
 
-    public int getDestino() {
-        return destino.getId();
+    public void setC(char c) {
+        this.c = c;
     }
 
-    @Override
-    public String toString() {
-        return "Transicion{" + "c=" + c + ", origen=" + origen + ", destino=" + destino + '}';
+    public void setO(Estado o) {
+        this.o = o;
     }
 
 
-
-
-
-
-    
     
 }

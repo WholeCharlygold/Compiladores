@@ -12,24 +12,42 @@ import java.util.ArrayList;
  * @author chuch
 < */
 public class AFN {
-  public void Concadenar(String Text, ArrayList E, ArrayList T)
+    private  Estado es= new Estado();
+    private Transicion tr= new Transicion();
+    
+
+    public String AFNBasico(int i,char c)
     {
-            for(int i=0;i<Text.length();i++)
-            {
-                Estado origen= new Estado();
-                Estado destino= new Estado();
-                Transicion Linea= new Transicion();
-                origen.setId(i);
-                destino.setId(i+1);
-                Linea.set(Text.charAt(i), origen, destino);
-                E.add(origen);
-                E.add(destino);
-                if(i+1<Text.length())
-                {
-                E.set(i+1,destino);
-                }
-                T.add(Linea);
-                //Orden+=Linea.getOrigen()+" " + Linea.getC()+ " "+Linea.getDestino()+"\n";
-            }
+        Estado e1= new Estado();
+        Estado e2= new Estado();
+        e1.setId(i);
+        e1.setTipo(false);
+        if(e1.isTipo()!=true)
+        {
+        e2.setId(i+1); 
+        e2.setTipo(true);
+        Transicion t= new Transicion();
+        t.setC(c);
+        t.setO(e1);
+        t.setE(e2);
+        return t.getE();
+        }
+        return "Solo exite estado final";
     }
+
+    public String getEs() {
+        return es.toString();
+    }
+
+
+
+    public Transicion getTr() {
+        return tr;
+    }
+
+    @Override
+    public String toString() {
+        return "AFN{" + "es=" + es.toString() + + '}';
+    }
+
 }
