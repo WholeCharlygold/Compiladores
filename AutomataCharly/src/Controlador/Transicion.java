@@ -1,3 +1,5 @@
+package Controlador;
+
 
 public class Transicion {
 	private Estado estadoSiguiente;
