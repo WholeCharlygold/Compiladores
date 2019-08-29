@@ -1,6 +1,9 @@
 package Controlador;
 
-
+/**
+ *
+ * @author Maria Mireya
+ */
 public class Transicion {
 	private Estado estadoSiguiente;
 	private boolean epsilon;

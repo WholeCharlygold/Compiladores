@@ -9,17 +9,32 @@ import java.util.LinkedList;
  * */
 public abstract class Automata {
 	
-	protected LinkedList<Character> alfabeto;
-	protected HashSet<Estado> estados;
-	protected HashSet<Estado> estadosFinales; //Estados de aceptacion
-	protected Estado estadoInicial;
+    /**
+     *
+     */
+    protected LinkedList<Character> alfabeto;
+
+    /**
+     *
+     */
+    protected HashSet<Estado> estados;
+
+    /**
+     *
+     */
+    protected HashSet<Estado> estadosFinales; //Estados de aceptacion
+
+    /**
+     *
+     */
+    protected Estado estadoInicial;
 	
 	/**
 	 * Este contructor crea un Automata de acuerdo a lo establecido en los parametros
-	 * @param HashSet<Estado> estados - Estados del automata
-	 * @param LinkedList<Character> alfabeto - Alfabeto valido en el automata
-	 * @param HashSet<Estado> estadosFinales - Estados finales
-	 * @param Estado estadoInicial - Estado inicial del automata
+     * @param estados
+     * @param alfabeto
+     * @param estadosFinales
+     * @param estadoInicial
 	 * */
 	public Automata(HashSet<Estado> estados, LinkedList<Character> alfabeto,HashSet<Estado> estadosFinales, Estado estadoInicial) {
 		super();
@@ -33,19 +48,35 @@ public abstract class Automata {
 		this.estadoInicial = estadoInicial;
 	}
 	
-	public HashSet<Estado> getEstados() {
+    /**
+     *
+     * @return
+     */
+    public HashSet<Estado> getEstados() {
 		return estados;
 	}
 	
-	public LinkedList<Character> getAlfabeto() {
+    /**
+     *
+     * @return
+     */
+    public LinkedList<Character> getAlfabeto() {
 		return alfabeto;
 	}
 	
-	public HashSet<Estado> getEstadosFinales() {
+    /**
+     *
+     * @return
+     */
+    public HashSet<Estado> getEstadosFinales() {
 		return estadosFinales;
 	}
 	
-	public Estado getEstadoInicial() {
+    /**
+     *
+     * @return
+     */
+    public Estado getEstadoInicial() {
 		return estadoInicial;
 	}
 	

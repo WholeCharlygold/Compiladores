@@ -7,11 +7,15 @@ import java.util.LinkedList;
  */
 public class Estado {
 	private static long ID_ESTADOS = 0L;
-
+	private int token;
 	private boolean estadoInicial;
 	private boolean estadoFinal;
 	private LinkedList<Transicion> transiciones;
-	public long id;
+
+    /**
+     *
+     */
+    public long id;
 
 	/**
 	 * Crea un nuevo estado para un automata, el id se asigna de manera automatica
@@ -105,6 +109,20 @@ public class Estado {
 			;
 		}
 
+	}
+	/**
+	 * Funcion para obtener el token de un estado
+	 * @return Token del estado
+	 */
+	public int getToken(){
+		return this.token;
+	}
+	/**
+	 * Funcion para configirar el token a un estado
+	 * @param token - Token para el estado
+	 */
+	public void setToken(int token){
+		this.token=token;
 	}
 
 }

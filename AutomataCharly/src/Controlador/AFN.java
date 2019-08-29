@@ -189,11 +189,12 @@ public class AFN extends Automata {
 
     }
 /**
- * 
+ * Funcion que obtiene la cerradura epsilon pasandole un estado
  * @param start
- * @return
+ * @return Conjunto de estados
  */
     public HashSet<Estado> cerraduraEpsilon(Estado start) {
+        
         HashSet<Estado> r = new HashSet<Estado>();
         r.add(start);
         for (Estado e : this.getEstados()) {
@@ -213,6 +214,12 @@ public class AFN extends Automata {
 
     }
 
+    /**
+     *
+     * @param start
+     * @param guardar
+     * @return
+     */
     public HashSet<Estado> cerraduraEpsilon(Estado start, HashSet<Estado> guardar) {
         HashSet<Estado> r = guardar;
         r.add(start);
@@ -233,6 +240,12 @@ public class AFN extends Automata {
 
     }
 
+    /**
+     *
+     * @param conjunto
+     * @param c
+     * @return
+     */
     public HashSet<Estado> Mover(HashSet<Estado> conjunto, char c) {
         HashSet<Estado> r = new HashSet<Estado>();
         for (Estado e : conjunto) {
@@ -246,7 +259,8 @@ public class AFN extends Automata {
             }
         }
         if (r.isEmpty()) {
-            System.out.println("Operacion Mover vacia");
+           // System.out.println("Operacion Mover vacia");
+           r.clear();
             return r;
         } else {
             return r;
@@ -254,6 +268,13 @@ public class AFN extends Automata {
 
     }
 
+    /**
+     *
+     * @param siguiente
+     * @param c
+     * @param aux
+     * @return
+     */
     public HashSet<Estado> Mover(Estado siguiente, char c, HashSet<Estado> aux) {
         HashSet<Estado> r = aux;
 
@@ -268,6 +289,12 @@ public class AFN extends Automata {
         return r;
     }
 
+    /**
+     *
+     * @param s
+     * @param c
+     * @return
+     */
     public HashSet<Estado> Ir_A(HashSet<Estado> s, char c) {
         HashSet<Estado> r = new HashSet<Estado>();
         HashSet<Estado> r2 = new HashSet<Estado>();
@@ -278,7 +305,26 @@ public class AFN extends Automata {
 
         return r2;
     }
+    public void displayAFN(){
+          System.out.println(this.getAlfabeto());
+          System.out.println("Numero de estados: "+this.getEstados().size());
+        for (Estado estado : this.getEstados()) {
+            System.out.println(estado.getId());
+        }
+        for (Estado estado : this.getEstados()) {
+            estado.displayTransicion();
+        }
+        System.out.print("Estados finales: ");
+        for (Estado e : this.getEstadosFinales()) {
+            System.out.println(e.getId() + "");
+        }
+        System.out.println("Estado Inicial: " + this.getEstadoInicial().getId());
+    }
 
+    /**
+     *
+     * @param args
+     */
     public static void main(String[] args) {
 
         AFN carlos = new AFN('a');
@@ -300,30 +346,16 @@ public class AFN extends Automata {
          * }
          */
         // resultado2=carlos.Mover(carlos.getEstados(), 'a');
-        resultado = carlos.cerraduraEpsilon(carlos.getEstadoInicial());
+        resultado = carlos.cerraduraEpsilon(null);
         // carlos.pregunta();
         resultado2 = carlos.Ir_A(resultado, 'a');
 
-        System.out.println(carlos.getAlfabeto());
-        for (Estado estado : carlos.getEstados()) {
-            System.out.println(estado.getId());
-        }
-        for (Estado estado : carlos.getEstados()) {
-            estado.displayTransicion();
-        }
-        System.out.print("Estados finales: ");
-        for (Estado e : carlos.getEstadosFinales()) {
-            System.out.println(e.getId() + "");
-        }
-        System.out.println("Estado Inicial: " + carlos.getEstadoInicial().getId());
+      
 
-        for (Estado e : resultado2) {
+        for (Estado e : resultado) {
             System.out.println(e.getId() + " ");
         }
-        AFD afda = new AFD();
-        HashSet tabla = new HashSet();
-        tabla=afda.crearAFD(carlos);
-        //Verificacion automata
+       
    
     }
 }
