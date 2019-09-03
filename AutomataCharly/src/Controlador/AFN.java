@@ -305,21 +305,7 @@ public class AFN extends Automata {
 
         return r2;
     }
-    public void displayAFN(){
-          System.out.println(this.getAlfabeto());
-          System.out.println("Numero de estados: "+this.getEstados().size());
-        for (Estado estado : this.getEstados()) {
-            System.out.println(estado.getId());
-        }
-        for (Estado estado : this.getEstados()) {
-            estado.displayTransicion();
-        }
-        System.out.print("Estados finales: ");
-        for (Estado e : this.getEstadosFinales()) {
-            System.out.println(e.getId() + "");
-        }
-        System.out.println("Estado Inicial: " + this.getEstadoInicial().getId());
-    }
+    
 
     /**
      *

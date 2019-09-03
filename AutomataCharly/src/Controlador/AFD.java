@@ -4,8 +4,13 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class AFD extends Automata {
+    
 
     private HashMap<Object, HashMap<String, Object>> tabla;
+    public AFD(HashSet<Estado> estados, LinkedList<Character> alfabeto,HashSet<Estado> estadosFinales, Estado estadoInicial,HashMap<Object, HashMap<String, Object>> tabla) {
+		super(estados,alfabeto,estadosFinales,estadoInicial);
+		this.tabla =  tabla;
+	}
 
     public AFD(AFN input) {
         super(null, null, null, null);
@@ -48,23 +53,54 @@ public class AFD extends Automata {
         }
         this.alfabeto = input.getAlfabeto();
         System.out.println(estados_para_analizar.size());
+        AFD main=AFD.crear_AFD(this.tabla);
+        this.estados=main.estados;
+        this.estadosFinales=main.estadosFinales;
+        this.estadoInicial=main.estadoInicial;
+        
     }
 
-    public AFD crear_AFD(HashMap<Object, HashMap<String, Object>> tabulacion, LinkedList<Character> alfabeto){
-        HashSet <Estado> estados=new HashSet<Estado>();
-       // Estado estado_inicial=new Estado(true, false, new LinkedList<Transicion>());
-        for(Map.Entry<Object, HashMap<String, Object>> entry : tabulacion.entrySet()) {
-            Estado e=new Estado(false,false,new LinkedList<Transicion>());
-            for(Map.Entry<String,Object> entry2: entry.getValue().entrySet()){
-                Transicion t=new Transicion(entry2.getKey().charAt(0), e);
+    public static AFD crear_AFD(HashMap<Object, HashMap<String, Object>> tabulacion) {
+        HashMap<Integer, Estado> mapaEstados = new HashMap<Integer, Estado>();
+        HashSet<Estado> estados = new HashSet<Estado>();
+        HashSet<Estado> estados_finales = new HashSet<Estado>();
+        Estado e_inicial = null;
+        int i = 0;
+        for (Map.Entry<Object, HashMap<String, Object>> entry : tabulacion.entrySet()) {
+            LinkedList<Transicion> transiciones = new LinkedList<Transicion>();
+            Estado estado = new Estado(false, false, transiciones);
+            if ((int) entry.getKey() == 0) {
+                estado.setEstadoInicial(true);
+                e_inicial = estado;
             }
+            for (Map.Entry<String, Object> entry2 : entry.getValue().entrySet()) {
+                if (entry2.getKey() == "Token") {
+                    if ((int) entry2.getValue() != -1) {
+                        estado.setEstadoFinal(true);
+                        estados_finales.add(estado);
+                    }
+                }
+                estados.add(estado);
+                mapaEstados.put(i, estado);
+            }
+            i++;
         }
-        
-    } 
+        i=0;
+        for (Map.Entry<Object, HashMap<String, Object>> entry : tabulacion.entrySet()) {
+            Estado estado=mapaEstados.get(i);
+            for (Map.Entry<String, Object> entry2 : entry.getValue().entrySet()) {
+                if(Integer.parseInt(String.valueOf(entry2.getValue()))!=-1&&!"Token".equals(entry2.getKey()))
+                estado.getTransiciones().add(new Transicion(entry2.getKey().charAt(0), mapaEstados.get((entry2.getValue()))));
+            }
+            i++;
+        }
+       
+        return new AFD(estados, null, estados_finales, e_inicial, tabulacion);
+    }
+
     public void display_Tabla() {
         System.out.println(this.tabla);
     }
-    
 
     public static void main(String... strings) {
         AFN a = new AFN('a');
@@ -75,10 +111,11 @@ public class AFD extends Automata {
         c.clausura_cierre();
 
         a.concatenar(c);
-        a.displayAFN();
+        a.displayAutomata();
         //a_b_c.displayAFN();
         AFD resultado = new AFD(a);
         resultado.display_Tabla();
+        resultado.displayAutomata();
 
     }
 }

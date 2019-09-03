@@ -106,7 +106,7 @@ public class Estado {
 
 		for (Transicion t : this.getTransiciones()) {
 			System.out.println(this.id + "--" + t.getCaracterDeTransicion() + "->" + t.getEstadoSiguiente().getId());
-			;
+			
 		}
 
 	}

@@ -80,4 +80,20 @@ public abstract class Automata {
 		return estadoInicial;
 	}
 	
+    public void displayAutomata(){
+          System.out.println(this.getAlfabeto());
+          System.out.println("Numero de estados: "+this.getEstados().size());
+        for (Estado estado : this.getEstados()) {
+            System.out.println(estado.getId());
+        }
+        for (Estado estado : this.getEstados()) {
+            estado.displayTransicion();
+        }
+        System.out.print("Estados finales: ");
+        for (Estado e : this.getEstadosFinales()) {
+            System.out.print(e.getId() + " ");
+        }
+        System.out.println(" ");
+        System.out.println("Estado Inicial: " + this.getEstadoInicial().getId());
+    }
 }	
