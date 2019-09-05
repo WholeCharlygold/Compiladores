@@ -44,11 +44,13 @@ public class AFD extends Automata {
             }
             for (Estado e : input.getEstadosFinales()) {
                 if (help.contains(e)) {
-                    celda.put("Token", 1);
+                    celda.put("Token", e.getToken());
+                    this.tabla.put(indice.get(help), celda);
+                    break;
                 } else {
                     celda.put("Token", -1);
+                    this.tabla.put(indice.get(help), celda);
                 }
-                this.tabla.put(indice.get(help), celda);
             }
         }
         this.alfabeto = input.getAlfabeto();
@@ -77,6 +79,7 @@ public class AFD extends Automata {
                 if (entry2.getKey() == "Token") {
                     if ((int) entry2.getValue() != -1) {
                         estado.setEstadoFinal(true);
+                        estado.setToken((int)entry2.getValue());
                         estados_finales.add(estado);
                     }
                 }
@@ -104,9 +107,19 @@ public class AFD extends Automata {
 
     public static void main(String... strings) {
         AFN a = new AFN('a');
+        a.set_Token(100);
         AFN b = new AFN('b');
+        b.set_Token(500);
         AFN c = new AFN('c');
-        a.union(b);
+        c.set_Token(800);
+       // a.concatenar(b);
+       LinkedList<AFN> array=new LinkedList<AFN>();
+       array.add(a);
+       array.add(b);
+       array.add(c);
+       AFN resultado=AFN.big_join(array);
+       AFD resultado2=new AFD(resultado);
+       /* a.union(b);
         a.clausura_positiva();
         c.clausura_cierre();
 
@@ -115,7 +128,9 @@ public class AFD extends Automata {
         //a_b_c.displayAFN();
         AFD resultado = new AFD(a);
         resultado.display_Tabla();
-        resultado.displayAutomata();
+        resultado.displayAutomata();*/
+       resultado2.displayAutomata();
+       resultado2.display_Tabla();
 
     }
 }

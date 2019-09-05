@@ -34,7 +34,9 @@ public class AFN extends Automata {
         this.estadosFinales = estadosFinales;
         this.estadoInicial = estadoInicial;
     }
-
+    public AFN(){
+        super(new HashSet<Estado>(), new LinkedList<Character>(), new HashSet<Estado>(), null);
+    }
     /**
      * Funcion para concatenar el AFN con otro AFN(afnb)
      * 
@@ -305,7 +307,47 @@ public class AFN extends Automata {
 
         return r2;
     }
-    
+    public static AFN big_join(LinkedList<AFN> conjunto_afn){
+        AFN main=new AFN();
+        Estado e_inicial=new Estado(true, false, new LinkedList<Transicion>());
+        HashSet <Estado> e_finales=new HashSet<Estado>();
+        LinkedList <Transicion> inicial_transiciones=new LinkedList<Transicion>();
+        for(AFN a:conjunto_afn){
+            for (Character simbolo : a.getAlfabeto()) {
+            if (!main.alfabeto.contains(simbolo)) {
+                main.alfabeto.add(simbolo);
+            }
+        }
+            
+           for(Estado e:a.getEstados()){
+               if(e.isEstadoFinal()){
+                    e_finales.add(e);
+                    main.estados.add(e);
+               }
+                  
+               if(e.isEstadoInicial()){
+                    Transicion t=new Transicion(e);
+                    inicial_transiciones.add(t);
+                    //inicial_transiciones.addAll(e.getTransiciones());
+                    e.setEstadoInicial(false);
+                    main.estados.add(e);
+               }
+                  
+           }
+              
+        }
+        e_inicial.setTransiciones(inicial_transiciones);
+        main.estados.add(e_inicial);
+        main.estadoInicial=e_inicial;
+        main.estadosFinales=e_finales;
+        return main;
+    }
+    public void set_Token(int n){
+        for(Estado e:this.estadosFinales){
+            e.setToken(n);
+        }
+        
+    }
 
     /**
      *
