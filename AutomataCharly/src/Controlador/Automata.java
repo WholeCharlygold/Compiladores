@@ -84,8 +84,9 @@ public abstract class Automata {
           System.out.println(this.getAlfabeto());
           System.out.println("Numero de estados: "+this.getEstados().size());
         for (Estado estado : this.getEstados()) {
-            System.out.println(estado.getId());
+            System.out.print(estado.getId()+" ");
         }
+        System.out.println("");
         for (Estado estado : this.getEstados()) {
             estado.displayTransicion();
         }

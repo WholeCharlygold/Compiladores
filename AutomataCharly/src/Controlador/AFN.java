@@ -15,6 +15,9 @@ public class AFN extends Automata {
      * 
      * @param ch - Caracter para la construccion del afn
      */
+    public AFN(HashSet<Estado> estados,LinkedList<Character>alfabeto,HashSet<Estado>estadosFinales,Estado estadoInicial){
+        super(estados, alfabeto, estadosFinales, estadoInicial);
+    }
     public AFN(Character ch) {
         super(null, null, null, null);
         if (!super.getAlfabeto().contains(ch)) {
@@ -26,6 +29,35 @@ public class AFN extends Automata {
         estadosFinales.add(estadoFinal);
         LinkedList<Transicion> transicionesEstadoInicial = new LinkedList<Transicion>();
         transicionesEstadoInicial.add(new Transicion(ch, estadoFinal));
+        Estado estadoInicial = new Estado(true, false, transicionesEstadoInicial);
+        estados.add(estadoInicial);
+        estados.add(estadoFinal);
+
+        this.estados = estados;
+        this.estadosFinales = estadosFinales;
+        this.estadoInicial = estadoInicial;
+    }
+    public AFN(Character ch1,Character ch2) {
+        super(null, null, null, null);
+          if (ch1 == 'A' && ch2 == 'Z') {
+            char resultado = 'M';
+            super.getAlfabeto().add(resultado);
+          
+        }
+        if (ch1 == 'a' && ch2 == 'z') {
+            char resultado = 'm';
+           super.getAlfabeto().add(resultado);
+        }
+        if (ch1 == '0' && ch2 == '9') {
+            char resultado = 'D';
+           super.getAlfabeto().add(resultado);
+        }
+        HashSet<Estado> estados = new HashSet<Estado>();
+        Estado estadoFinal = new Estado(false, true, new LinkedList<Transicion>());
+        HashSet<Estado> estadosFinales = new HashSet<Estado>();
+        estadosFinales.add(estadoFinal);
+        LinkedList<Transicion> transicionesEstadoInicial = new LinkedList<Transicion>();
+        transicionesEstadoInicial.add(new Transicion(ch1,ch2 ,estadoFinal));
         Estado estadoInicial = new Estado(true, false, transicionesEstadoInicial);
         estados.add(estadoInicial);
         estados.add(estadoFinal);
@@ -302,45 +334,32 @@ public class AFN extends Automata {
         HashSet<Estado> r2 = new HashSet<Estado>();
         r = Mover(s, c);
         for (Estado e : r) {
-            r2 = cerraduraEpsilon(e);
+            r2.addAll(cerraduraEpsilon(e)) ;
         }
 
         return r2;
     }
     public static AFN big_join(LinkedList<AFN> conjunto_afn){
-        AFN main=new AFN();
-        Estado e_inicial=new Estado(true, false, new LinkedList<Transicion>());
-        HashSet <Estado> e_finales=new HashSet<Estado>();
-        LinkedList <Transicion> inicial_transiciones=new LinkedList<Transicion>();
-        for(AFN a:conjunto_afn){
-            for (Character simbolo : a.getAlfabeto()) {
-            if (!main.alfabeto.contains(simbolo)) {
-                main.alfabeto.add(simbolo);
-            }
-        }
-            
-           for(Estado e:a.getEstados()){
-               if(e.isEstadoFinal()){
-                    e_finales.add(e);
-                    main.estados.add(e);
-               }
-                  
-               if(e.isEstadoInicial()){
-                    Transicion t=new Transicion(e);
-                    inicial_transiciones.add(t);
-                    //inicial_transiciones.addAll(e.getTransiciones());
-                    e.setEstadoInicial(false);
-                    main.estados.add(e);
-               }
-                  
-           }
-              
-        }
-        e_inicial.setTransiciones(inicial_transiciones);
-        main.estados.add(e_inicial);
-        main.estadoInicial=e_inicial;
-        main.estadosFinales=e_finales;
-        return main;
+        LinkedList<Transicion> transiciones = new LinkedList<Transicion>();
+		HashSet<Estado> estados = new HashSet<Estado>();
+		HashSet<Estado> estadosFinales = new HashSet<Estado>();
+		LinkedList<Character> alfabeto = new LinkedList<Character>();
+		
+		for(AFN afn:conjunto_afn) {
+			Transicion transicion = new Transicion(afn.getEstadoInicial());
+			afn.getEstadoInicial().setEstadoInicial(false);
+			estados.addAll(afn.getEstados());
+			estadosFinales.addAll(afn.getEstadosFinales());
+			transiciones.add(transicion);
+			for(Character simbolo:afn.getAlfabeto()) {
+				if(!alfabeto.contains(simbolo)) {
+					alfabeto.add(simbolo);
+				}
+			}
+		}
+		Estado nuevoEstadoInicial = new Estado(true,false,transiciones);
+		estados.add(nuevoEstadoInicial);
+		return new AFN(estados, alfabeto, estadosFinales, nuevoEstadoInicial);
     }
     public void set_Token(int n){
         for(Estado e:this.estadosFinales){
@@ -355,35 +374,5 @@ public class AFN extends Automata {
      */
     public static void main(String[] args) {
 
-        AFN carlos = new AFN('a');
-        AFN afnb = new AFN('b');
-        AFN afnc = new AFN('c');
-        // afnc.clausura_cierre();
-        // carlos.union(afnb);
-        // carlos.clausura_positiva();
-        // carlos.concatenar(afnc);
-        /*
-         * AFN carlos=new AFN('a'); AFN aux= new AFN('a');
-         */
-        // carlos.concatenar(aux);
-        carlos.concatenar(afnb);
-        HashSet<Estado> resultado = new HashSet<Estado>();
-        HashSet<Estado> resultado2 = new HashSet<Estado>();
-        /*
-         * for (Estado e : carlos.getEstados()) { if (e.getId() == 9) resultado.add(e);
-         * }
-         */
-        // resultado2=carlos.Mover(carlos.getEstados(), 'a');
-        resultado = carlos.cerraduraEpsilon(null);
-        // carlos.pregunta();
-        resultado2 = carlos.Ir_A(resultado, 'a');
-
-      
-
-        for (Estado e : resultado) {
-            System.out.println(e.getId() + " ");
-        }
-       
-   
     }
 }
