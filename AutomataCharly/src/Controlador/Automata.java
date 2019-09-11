@@ -1,5 +1,6 @@
 package Controlador;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -7,7 +8,7 @@ import java.util.LinkedList;
 /**
  * Esta clase abstracta nos sirve para definir las operaciones y atributos principales para cualquier tipo de automata
  * */
-public abstract class Automata {
+public abstract class Automata implements Serializable{
 	
     /**
      *

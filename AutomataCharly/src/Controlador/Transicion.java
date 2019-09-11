@@ -1,10 +1,12 @@
 package Controlador;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Maria Mireya
  */
-public class Transicion {
+public class Transicion implements Serializable{
 
     private Estado estadoSiguiente;
     private boolean epsilon;

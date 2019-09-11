@@ -1,11 +1,12 @@
 package Controlador;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 
 /**
  * Clase que nos sirve para modelar un estado de un automata
  */
-public class Estado {
+public class Estado implements Serializable{
 	private static long ID_ESTADOS = 0L;
 	private int token;
 	private boolean estadoInicial;

@@ -1,5 +1,6 @@
 package Controlador;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -9,7 +10,7 @@ import java.util.Stack;
  * Clase que tiene como padre Automata y representa automatas finitos no
  * deterministas
  */
-public class AFN extends Automata {
+public class AFN extends Automata implements Serializable{
     /**
      * Contruye un AFN con un solo caracter
      * 
@@ -339,6 +340,16 @@ public class AFN extends Automata {
 
         return r2;
     }
+    public static long get_lastID(LinkedList <AFN> conjunto_afn){
+        long mayor=0L;
+        for(AFN a:conjunto_afn){
+            for(Estado e:a.getEstados()){
+                if(e.getId()>mayor)
+                    mayor=e.getId();
+            }
+        }
+        return mayor+1;
+    }
     public static AFN big_join(LinkedList<AFN> conjunto_afn){
         LinkedList<Transicion> transiciones = new LinkedList<Transicion>();
 		HashSet<Estado> estados = new HashSet<Estado>();
@@ -358,6 +369,7 @@ public class AFN extends Automata {
 			}
 		}
 		Estado nuevoEstadoInicial = new Estado(true,false,transiciones);
+                nuevoEstadoInicial.id=AFN.get_lastID(conjunto_afn);
 		estados.add(nuevoEstadoInicial);
 		return new AFN(estados, alfabeto, estadosFinales, nuevoEstadoInicial);
     }
